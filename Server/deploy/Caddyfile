@@ -1,0 +1,19 @@
+{
+    email {$ACME_EMAIL}
+    admin off
+}
+{$API_DOMAIN} {
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options nosniff
+        -Server
+    }
+    request_body {
+        max_size 100MB
+    }
+    reverse_proxy relay:8080 {
+        # Overwrite client-supplied values; relay's port is never published.
+        header_up X-Myaow-Client-IP {remote_host}
+    }
+    # Access logs intentionally disabled: URLs can identify private media.
+}

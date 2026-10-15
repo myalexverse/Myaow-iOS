@@ -1,0 +1,20 @@
+{
+  "name": "myaow-relay-server",
+  "version": "1.0.0",
+  "description": "Zero-Knowledge Ephemeral Relay, X3DH Prekey Directory & WebRTC Signaling Server for Myaow",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test_registration.js test_durable_relay.js test_collaboration.js test_secure_scheduler.js test_push_calls.js test_beta_operations.js test_beta_http.js test_beta_configuration.js test_supabase_gateway.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.750.0",
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^16.4.7",
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

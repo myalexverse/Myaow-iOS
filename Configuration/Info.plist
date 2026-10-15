@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>MyaowRelayURL</key><string>$(MYAOW_RELAY_URL)</string>
+<key>MyaowPushEnvironment</key><string>$(MYAOW_PUSH_ENVIRONMENT)</string>
+<key>MyaowBetaInviteRequired</key><string>$(MYAOW_BETA_INVITE_REQUIRED)</string>
+<key>NSBonjourServices</key><array><string>_myaow-radio._tcp</string><string>_myaow-mesh._tcp</string></array>
+<key>UIBackgroundModes</key><array><string>audio</string><string>voip</string></array>
+</dict></plist>

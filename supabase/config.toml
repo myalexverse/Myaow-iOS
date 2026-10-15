@@ -1,0 +1,12 @@
+project_id = "Myaow"
+
+[functions.myaow-api]
+# This gateway checks the existing X25519 identity proof and revocable Myaow
+# sessions itself. Register requires an invitation and is initially closed.
+verify_jwt = false
+entrypoint = "./functions/myaow-api/index.ts"
+
+[functions.myaow-push]
+# Internal only. Constant-time worker-secret authorization before claiming jobs.
+verify_jwt = false
+entrypoint = "./functions/myaow-push/index.ts"

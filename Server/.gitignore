@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+certs/
+*.p8
+*.pem
+*.db
+*.db-shm
+*.db-wal
+uploads/
+
+deploy/.env.beta
+!deploy/.env.beta.example
+backups/

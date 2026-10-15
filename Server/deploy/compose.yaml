@@ -1,0 +1,73 @@
+name: myaow-beta
+services:
+  relay:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: myaow-relay:beta
+    command: [node, start_beta.js]
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      MYAOW_DB_PATH: /data/myaow.db
+      MYAOW_UPLOADS_DIR: /data/uploads
+      MYAOW_TRUST_PROXY: '1'
+      BETA_REGISTRATION_MODE: ${BETA_REGISTRATION_MODE:-invite}
+      BETA_MAX_USERS: ${BETA_MAX_USERS:-30}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:?Define APNS_TEAM_ID}
+      APNS_KEY_ID: ${APNS_KEY_ID:?Define APNS_KEY_ID}
+      APNS_TOPIC: ${APNS_TOPIC:-com.ScendLabs.Myaow}
+      APNS_KEY_PATH: /run/secrets/apns_key
+      TURN_URLS: ${TURN_URLS:?Define TURN_URLS}
+      TURN_SHARED_SECRET_FILE: /run/secrets/turn_secret
+    secrets: [apns_key, turn_secret]
+    volumes:
+      - relay_data:/data
+      - backups:/backups
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 1536m
+    cpus: 1.5
+    pids_limit: 128
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options: {max-size: '10m', max-file: '3'}
+  edge:
+    image: ${CADDY_IMAGE:-caddy:2}
+    restart: unless-stopped
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?Define API_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?Define ACME_EMAIL}
+    ports: ['80:80', '443:443', '443:443/udp']
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      relay: {condition: service_healthy}
+    logging:
+      driver: json-file
+      options: {max-size: '10m', max-file: '3'}
+secrets:
+  apns_key:
+    file: ${APNS_KEY_FILE:?Define APNS_KEY_FILE}
+  turn_secret:
+    file: ${TURN_SECRET_FILE:?Define TURN_SECRET_FILE}
+volumes:
+  relay_data:
+  backups:
+  caddy_data:
+  caddy_config:
